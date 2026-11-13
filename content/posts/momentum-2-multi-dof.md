@@ -3,7 +3,7 @@ title: "广义动量观测（二）：多自由度推广与设计要点"
 slug: "momentum-2-multi-dof"
 date: 2026-09-16
 lastmod: 2026-09-16
-description: "一维的结论搬去多维刚体和机械臂，增益怎么选、模型误差怎么办，还有它跟直接微分、卡尔曼滤波的关系。"
+description: "一维的结论搬到多维刚体和机械臂上，增益怎么取、模型误差怎么办，跟直接微分差在哪。"
 weight: 5
 categories:
     - "控制理论"

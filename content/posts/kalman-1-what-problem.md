@@ -3,7 +3,7 @@ title: "卡尔曼滤波（一）：到底解决什么问题"
 slug: "kalman-1-what-problem"
 date: 2026-09-16
 lastmod: 2026-09-16
-description: "光流和加速度计各有一半毛病，卡尔曼滤波把它们揉成一个估计，说到底还是个互补滤波。"
+description: "光流抖，加速度计积分会漂，只能合起来估速度。合到最后就是个互补滤波。"
 weight: 1
 categories:
     - "控制理论"

@@ -3,7 +3,7 @@ title: "卡尔曼滤波（三）：设计步骤与光流加速度落地"
 slug: "kalman-3-design-and-tuning"
 date: 2026-09-16
 lastmod: 2026-09-16
-description: "五大公式落到实际设计里是什么顺序，光流加加速度计这个例子怎么跑、怎么调。"
+description: "五个公式在设计里怎么用，光流加加速度计这套怎么跑起来、怎么调。"
 weight: 3
 categories:
     - "控制理论"

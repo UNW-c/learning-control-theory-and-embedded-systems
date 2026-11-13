@@ -3,7 +3,7 @@ title: "卡尔曼滤波（二）：从高斯最优估计推出五大公式"
 slug: "kalman-2-derivation"
 date: 2026-09-16
 lastmod: 2026-09-16
-description: "从后验均值算起，把一次融合扩展成能在线跑的预测与更新递推。"
+description: "一次融合算出来的就是互补滤波，再把它撑成能一直跑下去的递推。"
 weight: 2
 categories:
     - "控制理论"

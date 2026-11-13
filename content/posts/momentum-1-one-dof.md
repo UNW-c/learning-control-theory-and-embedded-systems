@@ -3,7 +3,7 @@ title: "广义动量观测（一）：核心思路与一维推导"
 slug: "momentum-1-one-dof"
 date: 2026-09-16
 lastmod: 2026-09-16
-description: "用可测动量搭一个影子系统，外力观测就变成一个比例反馈的收敛问题，连续和离散都写出来。"
+description: "拿可测的动量搭个影子系统，外力观测变成比例反馈，连续和离散都推了一遍。"
 weight: 4
 categories:
     - "控制理论"

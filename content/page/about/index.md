@@ -3,37 +3,38 @@ title: "关于本站"
 slug: "about"
 date: 2026-11-13
 lastmod: 2026-11-13
-description: "这里记什么、怎么记、代码放在哪"
+description: "这个站放什么、我是谁、代码在哪"
 ---
 
-## 关于这个站点
+## 关于这个站
 
-控制理论和嵌入式开发两条线的学习记录，文章和代码都在同一个仓库里。
+控制理论和嵌入式开发，我都在学，笔记放这儿。
 
-控制理论这边偏现代控制理论：观测器写过卡尔曼滤波和广义动量观测，ESO 也在想写的名单里；控制器那边想聊 WBC 和 MPC。嵌入式开发从 Linux 系统切进去，内核态、用户态的事情，还有网络通信的部分，都会记。
+- **控制理论**：现代控制理论里的算法。观测器这边有卡尔曼滤波、广义动量观测，ESO 还没写；控制器打算写 WBC 和 MPC
+- **嵌入式开发**：Linux 的内核态和用户态，还有网络通信
 
-两条线放在一起看挺有意思。算法把性能的上限撑开，板子上跑起来是什么样，是另一回事。
-
-## 笔记的写法
-
-算法先有个形状，公式跟在后面。
-
-拿卡尔曼滤波来说，它在笔记里从头到尾只是一个互补滤波，五大公式都从互补滤波里长出来。这样读下来，每条公式都知道自己站在哪儿。
-
-公式读不下去的时候，跑仿真比盯着符号快。调参的手感也是这么练出来的，所以代码和文章放在一起，翻回去就能试。
-
-## 站点怎么排
-
-- 每个专题一篇长文，按原文的标题切开，内容照原样；
-- 文章末尾给出对应的代码目录；
-- [总览](/overview/) 直接从原始文档生成，跟本地文档保持一致。
+每篇配一份能跑的代码，按专题分目录放在仓库里。
 
 ## 关于我
 
-测控专业在读，网上叫 seven。GitHub 上的账号是 [UNW-c](https://github.com/UNW-c)，站点的内容和代码都在 [learning-control-theory-and-embedded-systems](https://github.com/UNW-c/learning-control-theory-and-embedded-systems) 这个仓库里。
+- 测控专业在读
+- RoboMaster 两年电控
+- 方向是控制算法和嵌入式
+- GitHub：[learning-control-theory-and-embedded-systems](https://github.com/UNW-c/learning-control-theory-and-embedded-systems)
+- Gitee：[gitee.com/bababba](https://gitee.com/bababba)
 
-笔记里有讲错的地方，或者想聊某个算法，去仓库开 issue 就行。
+## 站是怎么搭的
+
+- **Hugo**：静态站生成器，构建快
+- **Stack 主题**：卡片式的，配色我改成了暖粉
+- **GitHub Pages**：push 上去就自动构建发布
+
+## 文章从哪来
+
+正文是我自己整理的文档，脚本按原来的标题切成几篇，内容没动。每篇末尾会指向对应的代码目录，[总览](/overview/) 页直接用原文档生成。
+
+笔记还在慢慢补，写错的地方去仓库开 issue 就行。
 
 ## 许可
 
-除特别说明外，站点文章采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh) 许可协议；配套代码可以自由参考使用。
+除特别说明外，文章采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh) 许可协议，代码可以随便用。
