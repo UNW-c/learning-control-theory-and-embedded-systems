@@ -27,6 +27,11 @@ LOGGER = logging.getLogger(__name__)
 HEADING_PATTERN = re.compile(r"^(#{1,6})[ \t]+(.*?)[ \t]*$")
 FENCE_PATTERN = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})")
 
+# 表格行与行内代码段。GFM 表格中，代码段里的竖线同样会被当作单元格分隔符，
+# 必须转成 \| 才能显示成原样。
+TABLE_ROW_PATTERN = re.compile(r"^[ \t]*\|")
+CODE_SPAN_PATTERN = re.compile(r"`[^`\n]*`")
+
 # 文章正文的最小标题层级。文章标题由 front matter 提供，
 # 因此正文里的标题最多只能从二级开始。
 BODY_MIN_HEADING_LEVEL = 2
@@ -337,6 +342,9 @@ class NotesSplitter:
         rule = piece.rule
         raw = self._document.interval_lines(piece.interval)
         body = self._normalize_headings(raw, piece.interval)
+        body, escaped = _escape_table_pipes(body.splitlines(keepends=True))
+        if escaped:
+            LOGGER.info("%s：转义表格内的 %d 处竖线", rule.slug, escaped)
         body = _trim_blank_edges(body)
 
         parts = [self._post_front_matter(rule), body]
@@ -351,7 +359,10 @@ class NotesSplitter:
         raw: list[str] = []
         for interval in intervals:
             raw.extend(self._document.interval_lines(interval))
-        body = _trim_blank_edges(raw)
+        body, escaped = _escape_table_pipes(raw)
+        if escaped:
+            LOGGER.info("总览：转义表格内的 %d 处竖线", escaped)
+        body = _trim_blank_edges(body)
         front = _overview_front_matter()
         return (front + body).rstrip() + "\n"
 
@@ -430,6 +441,34 @@ def _overview_front_matter() -> str:
 def _toml_string(value: str) -> str:
     escaped = value.replace("\\", "\\\\").replace('"', '\\"')
     return f'"{escaped}"'
+
+
+def _escape_table_pipes(lines: list[str]) -> tuple[list[str], int]:
+    """转义表格单元格内代码段中的竖线。
+
+    GFM 解析表格时，代码段里的 `|` 依旧会被当成分列符，
+    例如 `x_k|k-1` 会把一个单元格切成两半。转义成 `\\|` 之后，
+    渲染结果仍然是原来的 `x_k|k-1`，源文档不需要改动。
+    """
+    result: list[str] = []
+    escaped_total = 0
+
+    for line in lines:
+        if not TABLE_ROW_PATTERN.match(line):
+            result.append(line)
+            continue
+
+        def _escape_span(match: re.Match[str]) -> str:
+            nonlocal escaped_total
+            span = match.group(0)
+            if "|" not in span:
+                return span
+            escaped_total += len(re.findall(r"(?<!\\)\|", span))
+            return re.sub(r"(?<!\\)\|", r"\\|", span)
+
+        result.append(CODE_SPAN_PATTERN.sub(_escape_span, line))
+
+    return result, escaped_total
 
 
 def _trim_blank_edges(lines: list[str]) -> str:
