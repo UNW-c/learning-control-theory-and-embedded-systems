@@ -4,7 +4,7 @@
 # 当前按仓库 learning-control-theory-and-embedded-systems 计算
 baseURL = "https://unw-c.github.io/learning-control-theory-and-embedded-systems/"
 
-title = "UNW-c"
+title = "seven"
 # 站点语言必须与主题 i18n 目录里的文件名一致（主题提供的是 zh.toml），
 # 写成 zh-cn 会导致 T 函数取不到翻译，界面出现空标题。
 defaultContentLanguage = "zh"

@@ -30,7 +30,7 @@ description: "这里记什么、怎么记、代码放在哪"
 
 ## 关于我
 
-测控专业在读。GitHub 上叫 [UNW-c](https://github.com/UNW-c)，站点的内容和代码都在 [learning-control-theory-and-embedded-systems](https://github.com/UNW-c/learning-control-theory-and-embedded-systems) 这个仓库里。
+测控专业在读，网上叫 seven。GitHub 上的账号是 [UNW-c](https://github.com/UNW-c)，站点的内容和代码都在 [learning-control-theory-and-embedded-systems](https://github.com/UNW-c/learning-control-theory-and-embedded-systems) 这个仓库里。
 
 笔记里有讲错的地方，或者想聊某个算法，去仓库开 issue 就行。
 
