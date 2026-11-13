@@ -3,7 +3,7 @@ title: "卡尔曼滤波（二）：从高斯最优估计推出五大公式"
 slug: "kalman-2-derivation"
 date: 2026-09-16
 lastmod: 2026-09-16
-description: "标量情形下先证“后验均值即最优估计”，再把互补滤波形式推广成完整的预测与更新递推。"
+description: "从后验均值算起，把一次融合扩展成能在线跑的预测与更新递推。"
 weight: 2
 categories:
     - "控制理论"

@@ -3,7 +3,7 @@ title: "总览与学习路线"
 slug: "overview"
 date: 2026-09-16
 lastmod: 2026-09-16
-description: "两个母题（控制理论、嵌入式开发）的定位，以及从反馈到最优控制的学习顺序。"
+description: "两条线在学什么，以及从反馈到最优控制这一段怎么走。"
 weight: 0
 ---
 

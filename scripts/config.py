@@ -67,7 +67,7 @@ POST_RULES: tuple[PostRule, ...] = (
     PostRule(
         title="卡尔曼滤波（一）：到底解决什么问题",
         slug="kalman-1-what-problem",
-        description="从光流与加速度计的矛盾出发，说明卡尔曼滤波要解决的是加权融合，本质是互补滤波。",
+        description="光流和加速度计各有一半毛病，卡尔曼滤波把它们揉成一个估计，说到底还是个互补滤波。",
         start_heading="### 问题",
         end_heading="### 从高斯最优估计推出互补滤波形式（标量）",
         tags=("卡尔曼滤波", "互补滤波", "状态估计"),
@@ -77,7 +77,7 @@ POST_RULES: tuple[PostRule, ...] = (
     PostRule(
         title="卡尔曼滤波（二）：从高斯最优估计推出五大公式",
         slug="kalman-2-derivation",
-        description="标量情形下先证“后验均值即最优估计”，再把互补滤波形式推广成完整的预测与更新递推。",
+        description="从后验均值算起，把一次融合扩展成能在线跑的预测与更新递推。",
         start_heading="### 从高斯最优估计推出互补滤波形式（标量）",
         end_heading="### 卡尔曼滤波设计步骤",
         tags=("卡尔曼滤波", "高斯分布", "协方差", "推导"),
@@ -87,7 +87,7 @@ POST_RULES: tuple[PostRule, ...] = (
     PostRule(
         title="卡尔曼滤波（三）：设计步骤与光流加速度落地",
         slug="kalman-3-design-and-tuning",
-        description="把五大公式落成一套可执行的设计流程，并在光流加加速度计的例子上给出运行与调参顺序。",
+        description="五大公式落到实际设计里是什么顺序，光流加加速度计这个例子怎么跑、怎么调。",
         start_heading="### 卡尔曼滤波设计步骤",
         end_heading="## 专题二：广义动量观测",
         tags=("卡尔曼滤波", "光流", "调参", "工程实现"),
@@ -97,7 +97,7 @@ POST_RULES: tuple[PostRule, ...] = (
     PostRule(
         title="广义动量观测（一）：核心思路与一维推导",
         slug="momentum-1-one-dof",
-        description="用可测动量构造影子系统，把外力观测问题变成一个比例反馈的误差收敛问题，并给出连续与离散形式。",
+        description="用可测动量搭一个影子系统，外力观测就变成一个比例反馈的收敛问题，连续和离散都写出来。",
         start_heading="### 问题",
         end_heading="### 多自由度推广（n 维刚体 / 机械臂）",
         tags=("广义动量观测", "观测器", "力估计", "一维推导"),
@@ -107,7 +107,7 @@ POST_RULES: tuple[PostRule, ...] = (
     PostRule(
         title="广义动量观测（二）：多自由度推广与设计要点",
         slug="momentum-2-multi-dof",
-        description="把一维结论推广到多维刚体与机械臂，讨论增益选择、模型误差，以及与直接微分和卡尔曼滤波的关系。",
+        description="一维的结论搬去多维刚体和机械臂，增益怎么选、模型误差怎么办，还有它跟直接微分、卡尔曼滤波的关系。",
         start_heading="### 多自由度推广（n 维刚体 / 机械臂）",
         end_heading="## 后续专题预留",
         tags=("广义动量观测", "多自由度", "机械臂", "设计要点"),
@@ -119,7 +119,7 @@ POST_RULES: tuple[PostRule, ...] = (
 OVERVIEW_RULE = OverviewRule(
     title="总览与学习路线",
     slug="overview",
-    description="两个母题（控制理论、嵌入式开发）的定位，以及从反馈到最优控制的学习顺序。",
+    description="两条线在学什么，以及从反馈到最优控制这一段怎么走。",
     weight=0,
 )
 
