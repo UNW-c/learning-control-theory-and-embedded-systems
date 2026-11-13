@@ -23,3 +23,6 @@ tools/dl/
 tools/hugo/
 tools/scratch/
 *.log
+
+# 本地需求说明，不进入公开仓库
+/提示词.md
