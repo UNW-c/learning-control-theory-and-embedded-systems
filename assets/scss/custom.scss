@@ -134,6 +134,11 @@
     }
 }
 
+/* 头像加一圈极淡的粉色描边，与暖色底融合 */
+.site-avatar .site-logo {
+    box-shadow: 0 0 0 2px rgba(217, 107, 131, 0.28), var(--shadow-l1);
+}
+
 /* 分类与标签徽标圆角更柔和 */
 .article-category a,
 .article-tags a {

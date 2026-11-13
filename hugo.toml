@@ -4,7 +4,7 @@
 # 当前按仓库 learning-control-theory-and-embedded-systems 计算
 baseURL = "https://unw-c.github.io/learning-control-theory-and-embedded-systems/"
 
-title = "控制与嵌入式笔记"
+title = "UNW-c"
 # 站点语言必须与主题 i18n 目录里的文件名一致（主题提供的是 zh.toml），
 # 写成 zh-cn 会导致 T 函数取不到翻译，界面出现空标题。
 defaultContentLanguage = "zh"
@@ -63,9 +63,9 @@ ignoreFiles = ["\\.pyc$", "\\/__pycache__\\/"]
 
     [params.sidebar]
         compact = false
-        avatar = "img/avatar.svg"
+        avatar = "img/github-avatar.png"
         # 侧边栏副标题，可自由修改
-        subtitle = "控制理论 · 嵌入式开发"
+        subtitle = "控制理论与嵌入式开发笔记"
 
     [params.article]
         headingAnchor = true

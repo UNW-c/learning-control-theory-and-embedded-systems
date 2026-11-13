@@ -30,9 +30,9 @@ description: "这个站点记录什么、按什么方式写、代码放在哪里
 - 每篇文章末尾给出对应的代码目录；
 - 站内「总览」页由原始文档直接生成，随时和本地文档保持一致。
 
-## 联系
+## 关于我
 
-GitHub 上的账号是 [UNW-c](https://github.com/UNW-c)，站点的内容和代码都放在 [learning-control-theory-and-embedded-systems](https://github.com/UNW-c/learning-control-theory-and-embedded-systems) 这个仓库里。
+测控专业在读。GitHub 上的账号是 [UNW-c](https://github.com/UNW-c)，站点的内容和代码都放在 [learning-control-theory-and-embedded-systems](https://github.com/UNW-c/learning-control-theory-and-embedded-systems) 这个仓库里。
 
 笔记里有讲错的地方，或者想讨论某个算法，直接在仓库开 issue 就行。
 
