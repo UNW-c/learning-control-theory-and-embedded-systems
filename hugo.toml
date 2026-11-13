@@ -1,10 +1,10 @@
 # 站点主配置
 #
 # baseURL 是发布地址。换仓库名时只需要改这一行。
-# 当前按仓库名 control-notes 计算，即 https://<用户名>.github.io/control-notes/
-baseURL = "https://cjy719hnu.github.io/control-notes/"
+# 当前按仓库 learning-control-theory-and-embedded-systems 计算
+baseURL = "https://unw-c.github.io/learning-control-theory-and-embedded-systems/"
 
-title = "控制算法学习笔记"
+title = "控制与嵌入式笔记"
 # 站点语言必须与主题 i18n 目录里的文件名一致（主题提供的是 zh.toml），
 # 写成 zh-cn 会导致 T 函数取不到翻译，界面出现空标题。
 defaultContentLanguage = "zh"
@@ -65,7 +65,7 @@ ignoreFiles = ["\\.pyc$", "\\/__pycache__\\/"]
         compact = false
         avatar = "img/avatar.svg"
         # 侧边栏副标题，可自由修改
-        subtitle = "控制与嵌入式学习笔记"
+        subtitle = "控制理论 · 嵌入式开发"
 
     [params.article]
         headingAnchor = true
@@ -139,6 +139,6 @@ ignoreFiles = ["\\.pyc$", "\\/__pycache__\\/"]
 [[menu.social]]
     identifier = "github"
     name = "GitHub"
-    url = "https://github.com/CJY719HNU"
+    url = "https://github.com/UNW-c"
     [menu.social.params]
         icon = "brand-github"

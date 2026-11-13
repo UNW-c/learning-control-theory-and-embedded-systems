@@ -109,6 +109,31 @@
     --pre-background-color: #fdf7f4;
 }
 
+/* 首页导语卡片：与文章卡片同一套变量，保证间距与圆角一致 */
+.home-intro {
+    background-color: var(--card-background);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--shadow-l1);
+    padding: var(--card-padding);
+    margin-bottom: var(--section-separation);
+
+    .article-content {
+        padding: 0;
+
+        > :first-child {
+            margin-top: 0;
+        }
+
+        > :last-child {
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 1.7rem;
+        }
+    }
+}
+
 /* 分类与标签徽标圆角更柔和 */
 .article-category a,
 .article-tags a {

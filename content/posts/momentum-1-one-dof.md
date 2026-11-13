@@ -374,4 +374,4 @@ e_k ≈ (1 - k·dt) · e_{k-1} + dt · fe
 
 ## 配套代码
 
-本文对应的可运行工程：[广义动量观测学习](https://github.com/CJY719HNU/control-notes/tree/main/广义动量观测学习)
+本文对应的可运行工程：[广义动量观测学习](https://github.com/UNW-c/learning-control-theory-and-embedded-systems/tree/main/广义动量观测学习)

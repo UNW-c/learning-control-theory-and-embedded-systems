@@ -274,4 +274,4 @@ python -m unittest discover -s test -t . -v
 
 ## 配套代码
 
-本文对应的可运行工程：[卡尔曼滤波学习](https://github.com/CJY719HNU/control-notes/tree/main/卡尔曼滤波学习)
+本文对应的可运行工程：[卡尔曼滤波学习](https://github.com/UNW-c/learning-control-theory-and-embedded-systems/tree/main/卡尔曼滤波学习)

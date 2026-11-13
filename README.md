@@ -1,8 +1,8 @@
-# 控制算法学习
+# learning-control-theory-and-embedded-systems
 
 控制理论与嵌入式开发两个母题的学习记录。文档正文按专题整理，配套可运行代码，站点用于公开发布。
 
-站点地址：`https://cjy719hnu.github.io/control-notes/`（仓库名确定后以实际为准）
+站点地址：`https://unw-c.github.io/learning-control-theory-and-embedded-systems/`
 
 ## 内容构成
 
@@ -11,13 +11,14 @@
 | `控制算法学习.md` | 原始总文档，包含全部专题笔记，是站点文章的唯一来源 |
 | `卡尔曼滤波学习/` | 专题一代码：光流与加速度计融合滤波，含实时 Q/R 调参界面 |
 | `广义动量观测学习/` | 专题二代码：一维刚体外部力观测仿真，含调参界面 |
-| `content/` | 站点文章（由脚本从总文档生成，不手工编辑） |
-| `assets/scss/custom.scss` | 暖粉配色覆写，主题源码未改动 |
+| `content/` | 站点内容：首页导语、关于页、由脚本生成的专题文章 |
+| `layouts/home.html` | 首页布局覆写，在文章列表上方插入 `content/_index.md` 的导语 |
+| `assets/scss/custom.scss` | 暖粉配色与首页导语卡片样式，主题源码未改动 |
 | `scripts/` | 总文档到站点文章的无损拆分工具 |
-| `hugo.toml` | 站点配置 |
+| `hugo.toml` | 站点配置，`baseURL` 唯一需要随仓库改名的地方 |
 | `themes/hugo-theme-stack` | Stack 主题（直接收录在仓库内，固定 v4.0.3） |
 
-两个母题对应站点分类：`控制理论` 与 `嵌入式开发`。目前控制理论已有内容，嵌入式开发待补充。
+两个母题对应站点分类：`控制理论` 与 `嵌入式开发`。控制理论已落地卡尔曼滤波与广义动量观测，嵌入式开发待补充。
 
 ## 本地预览
 
@@ -30,7 +31,7 @@ winget install Hugo.Hugo.Extended
 首次获取仓库：
 
 ```bash
-git clone <仓库地址>
+git clone https://github.com/UNW-c/learning-control-theory-and-embedded-systems.git
 ```
 
 主题已经收录在 `themes/hugo-theme-stack`，不需要额外拉取子模块。
@@ -41,32 +42,40 @@ git clone <仓库地址>
 hugo server -D
 ```
 
-默认地址 `http://localhost:1313/`。带子路径的站点在本地访问时需要加路径，例如 `http://localhost:1313/control-notes/`，以启动日志打印的地址为准。
+默认地址 `http://localhost:1313/`。带子路径的站点在本地访问时要加路径，例如 `http://localhost:1313/learning-control-theory-and-embedded-systems/`，以启动日志打印的地址为准。
 
 ## 文章如何生成
 
-站点文章不是手写的，由 `控制算法学习.md` 按标题切分而来：
+站点文章来自 `控制算法学习.md`，由脚本按标题切分：
 
 ```bash
-python scripts/build_content.py        # 生成或更新 content/posts/*.md
+python scripts/build_content.py         # 生成或更新 content/posts/*.md
 python scripts/build_content.py --check # 只校验是否同步，不同步则退出码 1
 ```
 
 这样做的原因：
 
 1. 总文档是学习时真正在维护的文件，站点只是它的发布视图，避免两处各改一遍；
-2. 拆分过程对正文逐字不动，只在切片处统一标题层级、补 front matter；
+2. 拆分对正文逐字不动，只在切片处统一标题层级、补 front matter；
 3. 脚本每次运行都会把切片按原顺序拼回去与原文比对，字节不一致直接报错退出。
 
-切分规则集中在 `scripts/config.py` 的 `POST_RULES`，增补专题时只改这一处。生成的文章**不要手工编辑**，下次运行会被覆盖。
+切分规则集中在 `scripts/config.py` 的 `POST_RULES`，增补专题时只改这一处。生成的文章不要手工编辑，下次运行会被覆盖。
+
+新增一篇专题的步骤：
+
+1. 在 `控制算法学习.md` 里按 `## 专题三：xxx` 的结构追加内容；
+2. 在 `POST_RULES` 里加一条规则，指定起止标题、slug、分类与标签；
+3. 运行 `python scripts/build_content.py` 重新生成。
+
+嵌入式开发的专题可以单独成文，分类写 `嵌入式开发`，其余流程一致。
 
 ## 发布
 
-1. 在 GitHub 新建仓库（建议 `control-notes`，需为 public 才能用免费 Pages）；
-2. 关联并推送：
+1. 仓库已就绪（需为 public 才能使用免费 Pages）；
+2. 首次推送：
 
 ```bash
-git remote add origin git@github.com:<用户名>/control-notes.git
+git remote add origin git@github.com:UNW-c/learning-control-theory-and-embedded-systems.git
 git push -u origin main
 ```
 
@@ -80,11 +89,13 @@ git push -u origin main
 要改两处，都在配置层，不涉及正文：
 
 1. `hugo.toml` 的 `baseURL`：决定站内链接前缀。工作流构建时会用 `actions/configure-pages` 输出的实际地址覆盖它，所以即使忘了改，线上也能正常访问，改它是为了让本地预览一致；
-2. `scripts/config.py` 的 `CODE_REPO_URL`：文章末尾“配套代码”链接指向的仓库地址，这个不会被工作流覆盖，必须与真实仓库一致。
+2. `scripts/config.py` 的 `CODE_REPO_URL`：文章末尾「配套代码」链接指向的仓库地址，这个不会被工作流覆盖，必须与真实仓库一致。
 
-## 换配色
+## 改文案与配色
 
-`assets/scss/custom.scss` 覆写的是 Stack 主题的 CSS 变量，浅色与暗色两套都在同一个文件里，不需要改主题源码。主题升级不会冲掉配色。
+- 首页导语：`content/_index.md`，改完直接生效，不需要重新生成文章；
+- 关于页：`content/page/about/index.md`；
+- 配色：`assets/scss/custom.scss` 覆写 Stack 的 CSS 变量，浅色与暗色两套在同一文件里，主题升级不会冲掉。
 
 ## 代码说明
 

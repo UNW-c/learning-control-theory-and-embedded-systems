@@ -22,7 +22,7 @@ PAGES_DIR = CONTENT_ROOT / "page"
 DEFAULT_POST_DATE = "2026-09-16"
 
 # 专题代码目录 -> GitHub 仓库内路径，用于文章末尾的“配套代码”链接。
-CODE_REPO_URL = "https://github.com/CJY719HNU/control-notes"
+CODE_REPO_URL = "https://github.com/UNW-c/learning-control-theory-and-embedded-systems"
 
 CODE_SECTIONS: dict[str, str] = {
     "kalman": "卡尔曼滤波学习",
