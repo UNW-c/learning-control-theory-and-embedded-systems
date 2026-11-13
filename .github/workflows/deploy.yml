@@ -41,10 +41,10 @@ jobs:
 
       - name: 配置 Pages
         id: pages
+        # 注意：Pages 站点需要在仓库 Settings -> Pages 里手动开启一次。
+        # 工作流自带的 GITHUB_TOKEN 没有管理员权限，无法创建 Pages 站点
+        # （实测报错 Resource not accessible by integration）。
         uses: actions/configure-pages@v5
-        with:
-          # 仓库尚未开启 Pages 时由工作流自动开启，省去手动设置一步
-          enablement: true
 
       - name: 构建
         run: hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"

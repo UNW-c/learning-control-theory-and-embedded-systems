@@ -79,7 +79,8 @@ git remote add origin git@github.com:UNW-c/learning-control-theory-and-embedded-
 git push -u origin main
 ```
 
-3. 仓库 Settings → Pages → Build and deployment → Source 选择 **GitHub Actions**；
+3. 仓库 Settings → Pages → Build and deployment → Source 选择 **GitHub Actions**。
+   这一步必须在网页上手动做一次：工作流的 `GITHUB_TOKEN` 没有管理员权限，无法替你创建 Pages 站点（会报 `Resource not accessible by integration`）；
 4. 之后每次 push 到 `main`，`.github/workflows/deploy.yml` 会自动构建并发布。
 
 工作流在构建前会执行 `python3 scripts/build_content.py --check`，如果改了总文档却忘了重新生成文章，发布会直接失败，避免站点内容与文档不一致。
