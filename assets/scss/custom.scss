@@ -1,0 +1,116 @@
+/*
+*   暖粉配色覆写
+*
+*   Stack 主题的全部配色都以 CSS 变量形式定义在主题的 variables.scss 里，
+*   本文件在主题样式之后被引入（见主题 style.scss 末尾的 @import "custom.scss"），
+*   因此在同一选择器上重新声明变量即可整体换色，无需改动主题源码。
+*
+*   设计约束：
+*   1. 底色用暖米白而不是纯白，避免粉色的“甜腻 + 刺眼”叠加；
+*   2. 强调色（链接、按钮、站点名）用中明度玫瑰粉，保证白字对比度；
+*   3. 暗色模式单独给一套降饱和的粉，避免深色底上荧光感过强。
+*/
+
+:root {
+    /* 页面与卡片 */
+    --body-background: #fff7f2;
+    --card-background: #fffdfb;
+    --card-background-selected: #fdeee8;
+    --card-border-radius: 14px;
+
+    /* 强调色：玫瑰粉 */
+    --accent-color: #d96b83;
+    --accent-color-darker: #bd5670;
+    --accent-color-text: #fffdfb;
+
+    /* 正文与卡片文字，暖灰褐系，与粉色同一色温 */
+    --body-text-color: #6f5b58;
+    --card-text-color-main: #3b2f2e;
+    --card-text-color-secondary: #8a7370;
+    --card-text-color-tertiary: #a08b86;
+    --card-separator-color: rgba(217, 107, 131, 0.16);
+
+    /* 正文排版 */
+    --base-font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei",
+        var(--sys-font-family), sans-serif;
+    --article-font-size: 1.62rem;
+    --article-line-height: 1.9;
+
+    /* 引用块与表格 */
+    --blockquote-background-color: #fdf1ec;
+    --table-border-color: #f0dcd4;
+    --tr-even-background-color: #fdf5f1;
+
+    /* 行内代码 */
+    --code-background-color: rgba(217, 107, 131, 0.09);
+    --code-text-color: #b1526a;
+
+    /* 阴影带一点暖调，避免灰黑影 */
+    --shadow-l1: 0px var(--shadow-l1-y) var(--shadow-l1-blur) rgba(150, 96, 80, 0.07),
+        0px 0px 2px rgba(150, 96, 80, 0.06), 0px 0px 1px rgba(150, 96, 80, 0.04);
+    --shadow-l2: 0px var(--shadow-l2-y) var(--shadow-l2-blur) rgba(150, 96, 80, 0.08),
+        0px 2px 6px rgba(150, 96, 80, 0.06), 0px 0px 1px rgba(150, 96, 80, 0.04);
+
+    &[data-scheme="dark"] {
+        --body-background: #241d1f;
+        --card-background: #2e2528;
+        --card-background-selected: #3a2e31;
+
+        --accent-color: #ef8ba1;
+        --accent-color-darker: #e0748b;
+        --accent-color-text: #241d1f;
+
+        --body-text-color: rgba(255, 240, 235, 0.72);
+        --card-text-color-main: rgba(255, 240, 235, 0.9);
+        --card-text-color-secondary: rgba(255, 240, 235, 0.68);
+        --card-text-color-tertiary: rgba(255, 240, 235, 0.5);
+        --card-separator-color: rgba(239, 139, 161, 0.16);
+
+        --blockquote-background-color: #352a2d;
+        --table-border-color: #4a3b3e;
+        --tr-even-background-color: #332a2d;
+
+        --code-background-color: rgba(239, 139, 161, 0.12);
+        --code-text-color: #f2a8b8;
+
+        --shadow-l1: 0px var(--shadow-l1-y) var(--shadow-l1-blur) rgba(0, 0, 0, 0.3),
+            0px 0px 2px rgba(0, 0, 0, 0.2);
+        --shadow-l2: 0px var(--shadow-l2-y) var(--shadow-l2-blur) rgba(0, 0, 0, 0.35),
+            0px 2px 6px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* 顶部导航的站点名与图标用强调色，其余保持简洁 */
+.site-name,
+.site-description {
+    letter-spacing: 0.02em;
+}
+
+/* 正文二级标题左侧竖线用强调色，长文里便于定位 */
+.article-content h2 {
+    padding-left: 12px;
+    border-left: var(--heading-border-size) solid var(--accent-color);
+    border-radius: 1px;
+}
+
+/* 表格：中文表格列多，收紧内边距并给表头底色 */
+.article-content table {
+    font-size: 0.94em;
+}
+
+.article-content thead th {
+    background-color: rgba(217, 107, 131, 0.07);
+    font-weight: 600;
+    color: var(--card-text-color-main);
+}
+
+/* 代码块：暖色底，避免默认冷灰与暖色主题打架 */
+:root[data-scheme="light"] {
+    --pre-background-color: #fdf7f4;
+}
+
+/* 分类与标签徽标圆角更柔和 */
+.article-category a,
+.article-tags a {
+    border-radius: var(--tag-border-radius);
+}

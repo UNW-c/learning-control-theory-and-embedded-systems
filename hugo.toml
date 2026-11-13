@@ -1,0 +1,144 @@
+# 站点主配置
+#
+# baseURL 是发布地址。换仓库名时只需要改这一行。
+# 当前按仓库名 control-notes 计算，即 https://<用户名>.github.io/control-notes/
+baseURL = "https://cjy719hnu.github.io/control-notes/"
+
+title = "控制算法学习笔记"
+# 站点语言必须与主题 i18n 目录里的文件名一致（主题提供的是 zh.toml），
+# 写成 zh-cn 会导致 T 函数取不到翻译，界面出现空标题。
+defaultContentLanguage = "zh"
+locale = "zh-CN"
+
+# 中文按“字”而不是“空格”统计词数与摘要
+hasCJKLanguage = true
+
+theme = "hugo-theme-stack"
+
+# 构建时忽略的非站点目录（代码目录不参与渲染）
+ignoreFiles = ["\\.pyc$", "\\/__pycache__\\/"]
+
+[pagination]
+    pagerSize = 5
+
+[permalinks]
+    posts = "/p/:slug/"
+    page = "/:slug/"
+
+[markup]
+    [markup.goldmark]
+        [markup.goldmark.renderer]
+            # 允许正文内嵌原始 HTML
+            unsafe = true
+        [markup.goldmark.extensions]
+            [markup.goldmark.extensions.passthrough]
+                enable = true
+                [markup.goldmark.extensions.passthrough.delimiters]
+                    block = [["\\[", "\\]"], ["$$", "$$"]]
+                    inline = [["\\(", "\\)"]]
+    [markup.tableOfContents]
+        startLevel = 2
+        endLevel = 4
+        ordered = true
+    [markup.highlight]
+        noClasses = false
+        codeFences = true
+        guessSyntax = true
+        # 文档里的代码块多为短小的公式与 ASCII 示意，行号会挤占宽度、干扰对齐
+        lineNos = false
+        tabWidth = 4
+
+[params]
+    # 首页列表只收录 posts 分区
+    mainSections = ["posts"]
+    rssFullContent = true
+    favicon = "img/favicon.svg"
+
+    [params.footer]
+        since = 2026
+
+    [params.dateFormat]
+        published = "2006-01-02"
+        lastUpdated = "2006-01-02 15:04"
+
+    [params.sidebar]
+        compact = false
+        avatar = "img/avatar.svg"
+        # 侧边栏副标题，可自由修改
+        subtitle = "控制与嵌入式学习笔记"
+
+    [params.article]
+        headingAnchor = true
+        math = false
+        toc = true
+        readingTime = true
+
+        [params.article.license]
+            enabled = true
+            default = "本文采用 CC BY-NC-SA 4.0 许可协议，转载请注明出处"
+
+    [params.widgets]
+        homepage = [
+            { type = "search" },
+            { type = "categories", params = { limit = 10 } },
+            { type = "tag-cloud", params = { limit = 20 } },
+        ]
+        page = [
+            { type = "toc" },
+        ]
+
+    [params.colorScheme]
+        toggle = true
+        # 暖色浅色主题作为默认外观
+        default = "light"
+
+    [params.comments]
+        enabled = false
+
+# 顶部导航：图标名取自 Tabler Icons
+[[menu.main]]
+    identifier = "home"
+    name = "首页"
+    url = "/"
+    weight = -100
+    [menu.main.params]
+        icon = "home"
+
+[[menu.main]]
+    identifier = "overview"
+    name = "总览"
+    url = "/overview/"
+    weight = -95
+    [menu.main.params]
+        icon = "categories"
+
+[[menu.main]]
+    identifier = "archives"
+    name = "归档"
+    url = "/archives/"
+    weight = -90
+    [menu.main.params]
+        icon = "archives"
+
+[[menu.main]]
+    identifier = "search"
+    name = "搜索"
+    url = "/search/"
+    weight = -80
+    [menu.main.params]
+        icon = "search"
+
+[[menu.main]]
+    identifier = "about"
+    name = "关于"
+    url = "/about/"
+    weight = -70
+    [menu.main.params]
+        icon = "user"
+
+[[menu.social]]
+    identifier = "github"
+    name = "GitHub"
+    url = "https://github.com/CJY719HNU"
+    [menu.social.params]
+        icon = "brand-github"
