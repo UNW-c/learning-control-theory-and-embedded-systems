@@ -1,13 +1,13 @@
 {{ define "main" }}
-    {{- with .Content }}
+    {{- $paginator := partial "helper/paginator.html" . -}}
+
+    {{- if and (eq $paginator.PageNumber 1) .Content }}
         <section class="home-intro">
             <div class="article-content">
-                {{ . }}
+                {{ .Content }}
             </div>
         </section>
     {{- end }}
-
-    {{- $paginator := partial "helper/paginator.html" . -}}
 
     <section class="article-list">
         {{ range $index, $element := $paginator.Pages }}
