@@ -54,25 +54,18 @@ class PostRule:
 
 
 @dataclass(frozen=True)
-class OverviewRule:
-    """总览页：收录未被任何专题文章认领的原文片段。"""
-
-    title: str
-    slug: str
-    description: str
-    weight: int
-    date: str = DEFAULT_POST_DATE
-
-
-@dataclass(frozen=True)
 class DocumentSet:
-    """一份源文档，以及它拆成站内文章的规则。"""
+    """一份源文档，以及它拆成站内文章的规则。
+
+    allow_unclaimed 为真时，源文档里没被任何文章认领的片段允许不上站，
+    用于那些写给自己看的部分（工作区说明、学习规划之类）。
+    """
 
     label: str
     path: Path
     post_rules: tuple[PostRule, ...]
     dropped_headings: tuple[str, ...]
-    overview: OverviewRule | None
+    allow_unclaimed: bool = False
 
 
 # 专题文章按学习顺序排列，weight 决定站点首页的先后
@@ -127,13 +120,6 @@ POST_RULES: tuple[PostRule, ...] = (
         code_section="momentum",
         weight=5,
     ),
-)
-
-OVERVIEW_RULE = OverviewRule(
-    title="总览与学习路线",
-    slug="overview",
-    description="这里放哪些笔记，以及从反馈到最优控制这一段怎么走。",
-    weight=0,
 )
 
 # 这些标题行的信息已经由站点页面标题承担，正文里不再重复出现。
@@ -204,7 +190,8 @@ CONTROL_DOCUMENT = DocumentSet(
     path=MASTER_DOCUMENT,
     post_rules=POST_RULES,
     dropped_headings=DROPPED_HEADINGS,
-    overview=OVERVIEW_RULE,
+    # 总览页改成手写，文档里的工作区说明、学习路线、后续专题预留不再上站
+    allow_unclaimed=True,
 )
 
 COMMS_DOCUMENT = DocumentSet(
@@ -212,7 +199,6 @@ COMMS_DOCUMENT = DocumentSet(
     path=COMMS_DOCUMENT_PATH,
     post_rules=COMMS_POST_RULES,
     dropped_headings=COMMS_DROPPED_HEADINGS,
-    overview=None,
 )
 
 # 站点内容按这里的顺序生成，先控制理论，再嵌入式

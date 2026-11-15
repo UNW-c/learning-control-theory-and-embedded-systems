@@ -17,7 +17,6 @@ from scripts.config import (
     CODE_REPO_URL,
     CODE_SECTIONS,
     DocumentSet,
-    OverviewRule,
     PostRule,
 )
 
@@ -188,7 +187,7 @@ class NotesSplitter:
         dropped = self._locate_dropped_intervals()
         leftovers = self._complement(pieces, dropped)
 
-        if self._docset.overview is None and leftovers:
+        if leftovers and not self._docset.allow_unclaimed:
             raise SplitError(
                 f"{self._docset.label} 有没被任何文章认领的片段，共 {len(leftovers)} 段"
             )
@@ -205,14 +204,6 @@ class NotesSplitter:
                 )
             )
 
-        if self._docset.overview is not None:
-            result.files.append(
-                GeneratedFile(
-                    path=self._overview_path(),
-                    content=self._render_overview(leftovers),
-                )
-            )
-
         result.verified_lossless = self._verify_reconstruction(
             pieces, dropped, leftovers
         )
@@ -223,7 +214,7 @@ class NotesSplitter:
             "拆分完成：%s，%d 篇文章%s，原文 %d 字节",
             self._docset.label,
             len(pieces),
-            " + 1 个总览页" if self._docset.overview is not None else "",
+            f"，另有 {len(leftovers)} 段不上站" if leftovers else "",
             result.source_bytes,
         )
         return result
@@ -360,12 +351,6 @@ class NotesSplitter:
 
         return POSTS_DIR / f"{rule.slug}.md"
 
-    def _overview_path(self) -> Path:
-        from scripts.config import PAGES_DIR
-
-        assert self._docset.overview is not None
-        return PAGES_DIR / self._docset.overview.slug / "index.md"
-
     def _render_post(self, piece: BodyPiece) -> str:
         rule = piece.rule
         raw = self._document.interval_lines(piece.interval)
@@ -382,18 +367,6 @@ class NotesSplitter:
                 POST_FOOTER_TEMPLATE.format(section=section, repo=CODE_REPO_URL)
             )
         return "".join(parts).rstrip() + "\n"
-
-    def _render_overview(self, intervals: list[Interval]) -> str:
-        assert self._docset.overview is not None
-        raw: list[str] = []
-        for interval in intervals:
-            raw.extend(self._document.interval_lines(interval))
-        body, escaped = _escape_table_pipes(raw)
-        if escaped:
-            LOGGER.info("总览：转义表格内的 %d 处竖线", escaped)
-        body = _trim_blank_edges(body)
-        front = _overview_front_matter(self._docset.overview)
-        return (front + body).rstrip() + "\n"
 
     def _normalize_headings(self, raw: list[str], interval: Interval) -> str:
         """把正文标题整体上提到二级，并保持相对层级不变。"""
@@ -452,19 +425,6 @@ class NotesSplitter:
             f"{tags}\n"
             "---\n\n"
         )
-
-
-def _overview_front_matter(rule: OverviewRule) -> str:
-    return (
-        "---\n"
-        f"title: {_toml_string(rule.title)}\n"
-        f"slug: {_toml_string(rule.slug)}\n"
-        f"date: {rule.date}\n"
-        f"lastmod: {rule.date}\n"
-        f"description: {_toml_string(rule.description)}\n"
-        f"weight: {rule.weight}\n"
-        "---\n\n"
-    )
 
 
 def _toml_string(value: str) -> str:
