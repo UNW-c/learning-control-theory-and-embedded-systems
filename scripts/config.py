@@ -13,6 +13,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 MASTER_DOCUMENT = PROJECT_ROOT / "控制算法学习.md"
+COMMS_DOCUMENT_PATH = PROJECT_ROOT / "嵌入式通信学习.md"
 CONTENT_ROOT = PROJECT_ROOT / "content"
 POSTS_DIR = CONTENT_ROOT / "posts"
 PAGES_DIR = CONTENT_ROOT / "page"
@@ -20,6 +21,7 @@ PAGES_DIR = CONTENT_ROOT / "page"
 # 所有文章统一的整理日期。原文没有标注写作日期，
 # 这里用总文档的整理时间，避免编造时间线。
 DEFAULT_POST_DATE = "2026-09-16"
+COMMS_POST_DATE = "2026-11-15"
 
 # 专题代码目录 -> GitHub 仓库内路径，用于文章末尾的“配套代码”链接。
 CODE_REPO_URL = "https://github.com/UNW-c/learning-control-theory-and-embedded-systems"
@@ -60,6 +62,17 @@ class OverviewRule:
     description: str
     weight: int
     date: str = DEFAULT_POST_DATE
+
+
+@dataclass(frozen=True)
+class DocumentSet:
+    """一份源文档，以及它拆成站内文章的规则。"""
+
+    label: str
+    path: Path
+    post_rules: tuple[PostRule, ...]
+    dropped_headings: tuple[str, ...]
+    overview: OverviewRule | None
 
 
 # 专题文章按学习顺序排列，weight 决定站点首页的先后
@@ -130,3 +143,77 @@ DROPPED_HEADINGS: tuple[str, ...] = (
     "## 专题一：卡尔曼滤波学习",
     "## 专题二：广义动量观测",
 )
+
+# 嵌入式通信这篇的开头是文档级引言，并进第一篇文章。
+# 起点用 @lead 标记，指向标题之后的第一行正文，改了引言措辞也不用动这里。
+COMMS_POST_RULES: tuple[PostRule, ...] = (
+    PostRule(
+        title="嵌入式通信（一）：MQTT 与 IPC",
+        slug="comms-1-mqtt-ipc",
+        description="MQTT 的报文怎么到订阅端，板子上的队列怎么把数据递给另一个任务。",
+        start_heading="@lead",
+        end_heading="## 从设计原则出发",
+        tags=("MQTT", "IPC", "发布订阅"),
+        code_section=None,
+        weight=6,
+        categories=("嵌入式开发",),
+        date=COMMS_POST_DATE,
+    ),
+    PostRule(
+        title="嵌入式通信（二）：broker、topic 与 QoS",
+        slug="comms-2-broker-topic-qos",
+        description="broker 记什么、topic 怎么分层、QoS 三档怎么选，末尾一个完整的客户端。",
+        start_heading="## 从设计原则出发",
+        end_heading="## TCP",
+        tags=("MQTT", "broker", "QoS", "遗嘱"),
+        code_section=None,
+        weight=7,
+        categories=("嵌入式开发",),
+        date=COMMS_POST_DATE,
+    ),
+    PostRule(
+        title="嵌入式通信（三）：TCP 与自定义协议",
+        slug="comms-3-tcp",
+        description="三次握手四次挥手，字节流怎么切帧，CRC 和粘包各怎么处理。",
+        start_heading="## TCP",
+        end_heading="## UDP",
+        tags=("TCP", "自定义协议", "粘包", "CRC"),
+        code_section=None,
+        weight=8,
+        categories=("嵌入式开发",),
+        date=COMMS_POST_DATE,
+    ),
+    PostRule(
+        title="嵌入式通信（四）：UDP 与 socket",
+        slug="comms-4-udp-socket",
+        description="UDP 的数据报和广播，socket 的调用，还有 Linux 下的 SocketCAN。",
+        start_heading="## UDP",
+        end_heading=None,
+        tags=("UDP", "socket", "SocketCAN"),
+        code_section=None,
+        weight=9,
+        categories=("嵌入式开发",),
+        date=COMMS_POST_DATE,
+    ),
+)
+
+COMMS_DROPPED_HEADINGS: tuple[str, ...] = ("# 嵌入式通信学习",)
+
+CONTROL_DOCUMENT = DocumentSet(
+    label="控制算法学习",
+    path=MASTER_DOCUMENT,
+    post_rules=POST_RULES,
+    dropped_headings=DROPPED_HEADINGS,
+    overview=OVERVIEW_RULE,
+)
+
+COMMS_DOCUMENT = DocumentSet(
+    label="嵌入式通信学习",
+    path=COMMS_DOCUMENT_PATH,
+    post_rules=COMMS_POST_RULES,
+    dropped_headings=COMMS_DROPPED_HEADINGS,
+    overview=None,
+)
+
+# 站点内容按这里的顺序生成，先控制理论，再嵌入式
+DOCUMENTS: tuple[DocumentSet, ...] = (CONTROL_DOCUMENT, COMMS_DOCUMENT)

@@ -19,7 +19,7 @@ theme = "hugo-theme-stack"
 ignoreFiles = ["\\.pyc$", "\\/__pycache__\\/"]
 
 [pagination]
-    pagerSize = 5
+    pagerSize = 10
 
 [permalinks]
     posts = "/p/:slug/"

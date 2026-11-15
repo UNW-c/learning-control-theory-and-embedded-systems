@@ -16,9 +16,8 @@ from pathlib import Path
 from scripts.config import (
     CODE_REPO_URL,
     CODE_SECTIONS,
-    DROPPED_HEADINGS,
-    OVERVIEW_RULE,
-    POST_RULES,
+    DocumentSet,
+    OverviewRule,
     PostRule,
 )
 
@@ -26,6 +25,10 @@ LOGGER = logging.getLogger(__name__)
 
 HEADING_PATTERN = re.compile(r"^(#{1,6})[ \t]+(.*?)[ \t]*$")
 FENCE_PATTERN = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})")
+
+# 第一篇的起点可以写成这个标记：指文档标题之后的第一行正文，
+# 用来把文档级引言并进第一篇文章，而不是单独做一页。
+LEAD_MARKER = "@lead"
 
 # 表格行与行内代码段。GFM 表格中，代码段里的竖线同样会被当作单元格分隔符，
 # 必须转成 \| 才能显示成原样。
@@ -160,19 +163,37 @@ class SourceDocument:
     def interval_lines(self, interval: Interval) -> list[str]:
         return self.lines[interval.start : interval.end]
 
+    def lead_line(self) -> int:
+        """返回文档标题之后的第一行正文，供 LEAD_MARKER 使用。
+
+        标题行和空行都跳过，中间出现的小标题也不算正文。
+        """
+        for index, line in enumerate(self.lines):
+            stripped = line.strip()
+            if not stripped or HEADING_PATTERN.match(stripped):
+                continue
+            return index
+        raise SplitError("找不到文档开头的正文行")
+
 
 class NotesSplitter:
     """按配置把总文档切成文章，并验证拆分无损。"""
 
-    def __init__(self, document: SourceDocument) -> None:
+    def __init__(self, document: SourceDocument, docset: DocumentSet) -> None:
         self._document = document
+        self._docset = docset
 
     def build(self) -> BuildResult:
         pieces = self._locate_body_pieces()
         dropped = self._locate_dropped_intervals()
-        overview_intervals = self._complement(pieces, dropped)
+        leftovers = self._complement(pieces, dropped)
 
-        self._verify_partition(pieces, dropped, overview_intervals)
+        if self._docset.overview is None and leftovers:
+            raise SplitError(
+                f"{self._docset.label} 有没被任何文章认领的片段，共 {len(leftovers)} 段"
+            )
+
+        self._verify_partition(pieces, dropped, leftovers)
 
         result = BuildResult(source_bytes=len(self._document.text.encode("utf-8")))
 
@@ -184,22 +205,25 @@ class NotesSplitter:
                 )
             )
 
-        result.files.append(
-            GeneratedFile(
-                path=self._overview_path(),
-                content=self._render_overview(overview_intervals),
+        if self._docset.overview is not None:
+            result.files.append(
+                GeneratedFile(
+                    path=self._overview_path(),
+                    content=self._render_overview(leftovers),
+                )
             )
-        )
 
         result.verified_lossless = self._verify_reconstruction(
-            pieces, dropped, overview_intervals
+            pieces, dropped, leftovers
         )
         if not result.verified_lossless:
             raise SplitError("拆分结果无法还原原文，已中止写入")
 
         LOGGER.info(
-            "拆分完成：%d 篇文章 + 1 个总览页，原文 %d 字节",
+            "拆分完成：%s，%d 篇文章%s，原文 %d 字节",
+            self._docset.label,
             len(pieces),
+            " + 1 个总览页" if self._docset.overview is not None else "",
             result.source_bytes,
         )
         return result
@@ -212,8 +236,11 @@ class NotesSplitter:
         pieces: list[BodyPiece] = []
         cursor = 0
 
-        for rule in POST_RULES:
-            start = scanner.find_next(rule.start_heading, cursor)
+        for rule in self._docset.post_rules:
+            if rule.start_heading == LEAD_MARKER:
+                start = self._document.lead_line()
+            else:
+                start = scanner.find_next(rule.start_heading, cursor)
             if start < 0:
                 raise SplitError(
                     f"找不到起点标题：{rule.start_heading!r}（{rule.slug}）"
@@ -249,7 +276,7 @@ class NotesSplitter:
         intervals: list[Interval] = []
         cursor = 0
 
-        for heading in DROPPED_HEADINGS:
+        for heading in self._docset.dropped_headings:
             start = scanner.find_next(heading, cursor)
             if start < 0:
                 raise SplitError(f"找不到需要省略的标题：{heading!r}")
@@ -336,7 +363,8 @@ class NotesSplitter:
     def _overview_path(self) -> Path:
         from scripts.config import PAGES_DIR
 
-        return PAGES_DIR / OVERVIEW_RULE.slug / "index.md"
+        assert self._docset.overview is not None
+        return PAGES_DIR / self._docset.overview.slug / "index.md"
 
     def _render_post(self, piece: BodyPiece) -> str:
         rule = piece.rule
@@ -356,6 +384,7 @@ class NotesSplitter:
         return "".join(parts).rstrip() + "\n"
 
     def _render_overview(self, intervals: list[Interval]) -> str:
+        assert self._docset.overview is not None
         raw: list[str] = []
         for interval in intervals:
             raw.extend(self._document.interval_lines(interval))
@@ -363,7 +392,7 @@ class NotesSplitter:
         if escaped:
             LOGGER.info("总览：转义表格内的 %d 处竖线", escaped)
         body = _trim_blank_edges(body)
-        front = _overview_front_matter()
+        front = _overview_front_matter(self._docset.overview)
         return (front + body).rstrip() + "\n"
 
     def _normalize_headings(self, raw: list[str], interval: Interval) -> str:
@@ -425,15 +454,15 @@ class NotesSplitter:
         )
 
 
-def _overview_front_matter() -> str:
+def _overview_front_matter(rule: OverviewRule) -> str:
     return (
         "---\n"
-        f"title: {_toml_string(OVERVIEW_RULE.title)}\n"
-        f"slug: {_toml_string(OVERVIEW_RULE.slug)}\n"
-        f"date: {OVERVIEW_RULE.date}\n"
-        f"lastmod: {OVERVIEW_RULE.date}\n"
-        f"description: {_toml_string(OVERVIEW_RULE.description)}\n"
-        f"weight: {OVERVIEW_RULE.weight}\n"
+        f"title: {_toml_string(rule.title)}\n"
+        f"slug: {_toml_string(rule.slug)}\n"
+        f"date: {rule.date}\n"
+        f"lastmod: {rule.date}\n"
+        f"description: {_toml_string(rule.description)}\n"
+        f"weight: {rule.weight}\n"
         "---\n\n"
     )
 

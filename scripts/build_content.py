@@ -1,4 +1,4 @@
-"""将总文档同步为站点文章。
+"""将学习文档同步为站点文章。
 
 用法（在项目根目录执行）：
 
@@ -18,9 +18,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from scripts.config import MASTER_DOCUMENT  # noqa: E402
+from scripts.config import DOCUMENTS  # noqa: E402
 from scripts.notes_splitter import (  # noqa: E402
-    BuildResult,
+    GeneratedFile,
     NotesSplitter,
     SourceDocument,
     SplitError,
@@ -45,10 +45,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def check_files(result: BuildResult) -> list[Path]:
+def check_files(files: list[GeneratedFile]) -> list[Path]:
     """返回与生成结果不一致的文件列表。"""
     stale: list[Path] = []
-    for generated in result.files:
+    for generated in files:
         if not generated.path.exists():
             stale.append(generated.path)
             continue
@@ -58,8 +58,8 @@ def check_files(result: BuildResult) -> list[Path]:
     return stale
 
 
-def write_files(result: BuildResult) -> None:
-    for generated in result.files:
+def write_files(files: list[GeneratedFile]) -> None:
+    for generated in files:
         generated.path.parent.mkdir(parents=True, exist_ok=True)
         generated.path.write_text(
             generated.content, encoding="utf-8", newline="\n"
@@ -79,33 +79,38 @@ def main(argv: list[str] | None = None) -> int:
         stream=sys.stdout,
     )
 
-    if not MASTER_DOCUMENT.exists():
-        LOGGER.error("找不到总文档：%s", MASTER_DOCUMENT)
-        return 2
+    files: list[GeneratedFile] = []
 
-    try:
-        document = SourceDocument(MASTER_DOCUMENT)
-        result = NotesSplitter(document).build()
-    except SplitError as error:
-        LOGGER.error("拆分失败：%s", error)
-        return 3
+    for docset in DOCUMENTS:
+        if not docset.path.exists():
+            LOGGER.error("找不到源文档：%s", docset.path)
+            return 2
 
-    if not result.verified_lossless:
-        LOGGER.error("无损校验未通过，未写入任何文件")
-        return 4
+        try:
+            document = SourceDocument(docset.path)
+            result = NotesSplitter(document, docset).build()
+        except SplitError as error:
+            LOGGER.error("拆分失败：%s", error)
+            return 3
+
+        if not result.verified_lossless:
+            LOGGER.error("无损校验未通过，未写入任何文件")
+            return 4
+
+        files.extend(result.files)
 
     if args.check:
-        stale = check_files(result)
+        stale = check_files(files)
         if stale:
-            LOGGER.error("以下文件与总文档不同步：")
+            LOGGER.error("以下文件与源文档不同步：")
             for path in stale:
                 LOGGER.error("  %s", path.relative_to(PROJECT_ROOT))
             return 1
-        LOGGER.info("校验通过：站点内容与总文档一致")
+        LOGGER.info("校验通过：站点内容与源文档一致")
         return 0
 
-    write_files(result)
-    LOGGER.info("完成：共 %d 个文件", len(result.files))
+    write_files(files)
+    LOGGER.info("完成：共 %d 个文件", len(files))
     return 0
 
 
